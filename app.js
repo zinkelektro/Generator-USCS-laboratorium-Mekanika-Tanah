@@ -358,7 +358,7 @@
       '<table class="lay"><tr><td class="lc">' + left + '</td><td class="rc">' + buildResultPage(d, r) + '</td></tr></table>' +
       paras +
       '<table class="sig"><tr><td>Penguji<br><br><br><u>' + esc(d.penguji || '..................') + '</u></td><td>Pemeriksa<br><br><br><u>' + esc(d.pemeriksa || '..................') + '</u></td></tr></table>' +
-      '<p class="nt">Catatan: alat bantu klasifikasi awal USCS; hasil final perlu pemeriksaan kesesuaian metode pengujian dan standar ASTM D2487/SNI yang berlaku.</p>';
+      '<p class="nt">Catatan: Hasil pengujian ini berdasarkan Pengujian yang dilakukan di laboratorium sesuai sampel yang kami terima sesuai dengan SNI yang berlaku.</p>';
     return wrap('Laporan USCS ' + (d.sid || ''), b);
   }
   function currentReport() {
