@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USCS Auto Generator — SoilLab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <p class="brand">SoilLab · USCS</p>
+    <h1>USCS Auto Generator</h1>
+    <p class="sub">Klasifikasi tanah otomatis (ASTM D2487) dan pembuat laporan laboratorium. Berjalan offline.</p>
+  </div>
+  <div class="top-r">
+    <span class="ver">Versi 2.0</span>
+    <button id="btnTheme" class="ghost" type="button">Ganti tema</button>
+  </div>
+</header>
+
+<main class="grid">
+  <!-- ================= INPUT ================= -->
+  <div class="col-in">
+
+    <section class="card">
+      <h2>Identitas sampel</h2>
+      <div class="fields two">
+        <label>Laboratorium<input id="f_lab" type="text" value="Laboratorium Mekanika Tanah"></label>
+        <label>Proyek / pekerjaan<input id="f_proyek" type="text"></label>
+        <label>Lokasi / titik bor<input id="f_lokasi" type="text"></label>
+        <label>No. sampel<input id="f_sid" type="text" placeholder="mis. BH-01 / UDS-1"></label>
+        <label>Kedalaman (m)<input id="f_depth" type="text" placeholder="mis. 2,00 – 2,50"></label>
+        <label>Tanggal uji<input id="f_tgl" type="date"></label>
+        <label>Penguji<input id="f_penguji" type="text"></label>
+        <label>Pemeriksa<input id="f_pemeriksa" type="text"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Kop laporan (Word / PDF)</h2>
+      <p class="hint">Dipakai pada ekspor Word, cetak PDF, dan rekap. Pengaturan tersimpan di browser ini.</p>
+      <div class="fields">
+        <label>Nama instansi<input id="k_nama" type="text" placeholder="mis. Dinas Pekerjaan Umum — UPTD Laboratorium"></label>
+        <label>Alamat / kontak (opsional, boleh 2 baris)<textarea id="k_alamat" rows="2" placeholder="Jl. Contoh No. 1, Surabaya&#10;Telp. (031) 000000 · email@instansi.go.id"></textarea></label>
+        <label>Logo instansi (PNG / JPG / SVG)<input id="k_logo" type="file" accept="image/*"></label>
+      </div>
+      <div class="logo-row">
+        <img id="k_prev" alt="Pratinjau logo" hidden>
+        <button id="k_del" class="small" type="button" hidden>Hapus logo</button>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="k_show" checked> Tampilkan kop pada laporan</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>A. Analisis saringan dan hidrometer</h2>
+      <p class="hint">Masukkan persentase komposisi tanah. Total harus 100%.</p>
+      <div class="fields four">
+        <label>Gravel (%)<input id="f_g" type="text" inputmode="decimal"></label>
+        <label>Sand (%)<input id="f_s" type="text" inputmode="decimal"></label>
+        <label>Silt (%)<input id="f_si" type="text" inputmode="decimal"></label>
+        <label>Clay (%)<input id="f_c" type="text" inputmode="decimal"></label>
+      </div>
+      <div class="total" id="totalBox"><span>Total komposisi</span><strong id="total">0%</strong></div>
+    </section>
+
+    <section class="card">
+      <h2>B. Atterberg Limits</h2>
+      <div class="fields three">
+        <label>LL (%)<input id="f_ll" type="text" inputmode="decimal"></label>
+        <label>PL (%)<input id="f_pl" type="text" inputmode="decimal"></label>
+        <label>PI (%)<input id="f_pi" type="text" inputmode="decimal"></label>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="f_autopi" checked> PI dihitung otomatis (LL − PL)</label>
+        <label><input type="checkbox" id="f_np"> Non-plastis (NP)</label>
+        <label><input type="checkbox" id="f_org"> Tanah organik (LL kering oven / LL &lt; 0,75)</label>
+        <label><input type="checkbox" id="f_peat"> Gambut / sangat organik (Pt)</label>
+      </div>
+      <div class="fields three">
+        <label>LL kering oven (%) — opsional<input id="f_llod" type="text" inputmode="decimal"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>C. Analisis gradasi</h2>
+      <div class="fields five">
+        <label>D10 (mm)<input id="f_d10" type="text" inputmode="decimal"></label>
+        <label>D30 (mm)<input id="f_d30" type="text" inputmode="decimal"></label>
+        <label>D60 (mm)<input id="f_d60" type="text" inputmode="decimal"></label>
+        <label>Cu<input id="f_cu" type="text" inputmode="decimal"></label>
+        <label>Cc<input id="f_cc" type="text" inputmode="decimal"></label>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="f_autocu" checked> Cu dan Cc dihitung otomatis dari D10, D30, D60</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>D. Direct Shear Test</h2>
+      <div class="fields two">
+        <label>Kohesi (kg/cm²)<input id="f_coh" type="text" inputmode="decimal"></label>
+        <label>Sudut geser φ (°)<input id="f_phi" type="text" inputmode="decimal"></label>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button id="btnGen" class="primary" type="button">Generate klasifikasi &amp; deskripsi</button>
+      <button id="btnSample" type="button">Muat contoh data</button>
+      <button id="btnReset" class="ghost" type="button">Reset data</button>
+    </div>
+  </div>
+
+  <!-- ================= HASIL ================= -->
+  <div class="col-out">
+    <section class="card result">
+      <h2>Hasil analisis</h2>
+      <p class="label-s">Klasifikasi USCS</p>
+      <div class="sym" id="rSym">—</div>
+      <div class="nm" id="rName">Isi komposisi tanah untuk memulai.</div>
+      <div class="meta" id="rMeta"></div>
+      <ul class="msgs" id="rMsgs"></ul>
+      <div class="bar" id="compBar" aria-label="Komposisi butiran"></div>
+      <div class="legend" id="compLegend"></div>
+      <canvas id="chart" width="560" height="360" aria-label="Diagram plastisitas"></canvas>
+      <p class="hint">Diagram plastisitas Casagrande: garis A, garis U, dan LL = 50.</p>
+    </section>
+
+    <section class="card">
+      <h2>Deskripsi siap masuk laporan</h2>
+      <textarea id="desc" rows="16" placeholder="Tekan “Generate klasifikasi &amp; deskripsi”. Teks dapat diedit sebelum disalin atau diekspor."></textarea>
+      <div class="actions">
+        <button id="btnCopy" class="primary" type="button">Salin deskripsi lengkap</button>
+        <button id="btnWord" type="button">Ekspor Word (.doc)</button>
+        <button id="btnPdf" type="button">Cetak / simpan PDF</button>
+      </div>
+      <p class="note">Catatan: Hasil pengujian ini berdasarkan Pengujian yang dilakukan di laboratorium sesuai sampel yang kami terima sesuai dengan SNI yang berlaku.</p>
+    </section>
+  </div>
+</main>
+
+<!-- ================= DATABASE ================= -->
+<section class="card db">
+  <div class="db-head">
+    <h2>Database sampel</h2>
+    <div class="actions">
+      <button id="btnSave" class="primary" type="button">Simpan sampel ini</button>
+      <button id="btnCsv" type="button">Ekspor CSV</button>
+      <button id="btnRekap" type="button">Rekap Word</button>
+      <button id="btnJson" type="button">Cadangkan JSON</button>
+      <button id="btnImport" type="button">Impor JSON</button>
+      <input id="fileImport" type="file" accept=".json,application/json" hidden>
+    </div>
+  </div>
+  <label class="search">Cari sampel<input id="q" type="search" placeholder="No. sampel, lokasi, proyek, atau simbol USCS"></label>
+  <div class="tw">
+    <table id="dbTable">
+      <thead><tr><th>No. sampel</th><th>Proyek / lokasi</th><th>Kedalaman</th><th>Tanggal</th><th>USCS</th><th>Nama tanah</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="hint" id="dbEmpty">Belum ada sampel tersimpan. Data disimpan di browser perangkat ini (localStorage); gunakan Cadangkan JSON untuk memindahkan data.</p>
+</section>
+
+<section class="card feats">
+  <h2>Fitur</h2>
+  <ul>
+    <li>Input komposisi gravel, sand, silt, clay dengan validasi total 100%.</li>
+    <li>Input LL, PL, PI (PI otomatis), status NP, organik, dan gambut.</li>
+    <li>D10, D30, D60 dengan Cu dan Cc otomatis serta pemeriksaan konsistensi.</li>
+    <li>Kohesi dan sudut geser dalam dari direct shear.</li>
+    <li>Klasifikasi USCS lengkap: GW, GP, GM, GC, simbol ganda, SW, SP, SM, SC, CL, ML, CL-ML, OL, CH, MH, OH, Pt.</li>
+    <li>Nama kelompok dengan modifier “dengan kerikil/pasir”, “berkerikil/berpasir”.</li>
+    <li>Deskripsi teknis Bahasa Indonesia yang dapat diedit, plus tombol salin.</li>
+    <li>Diagram plastisitas dan bar komposisi butiran.</li>
+    <li>Kop laporan: nama instansi, alamat, dan logo untuk ekspor Word/PDF.</li>
+    <li>Database sampel, pencarian, CSV, JSON, laporan Word dan PDF.</li>
+  </ul>
+</section>
+
+<footer class="foot">Laboratorium Mekanika Tanah.</footer>
+
+<script src="classify.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
